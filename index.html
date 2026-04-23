@@ -2,197 +2,243 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>System Alert</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Account Notification</title>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  height:100%;
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow:hidden;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  background:url('https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=1200') no-repeat center center fixed;
-  background-size:cover;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background: #1a1a1a url('https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=1200') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* PUSH NOTIFICATION */
-.push {
-  position:fixed;
-  top:-120px;
-  left:50%;
-  transform:translateX(-50%);
-  width:92%;
-  max-width:420px;
-  background:rgba(28,28,30,0.95);
-  backdrop-filter:blur(12px);
-  border-radius:16px;
-  padding:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  color:#fff;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  transition:top 0.6s ease;
-  z-index:999;
+/* FLASH */
+.flash {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
 }
 
-.push.show {
-  top:20px;
+/* TOPBAR */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #111;
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.push img {
-  width:28px;
-  height:28px;
+.topbar img {
+  width: 16px;
+  filter: invert(1);
 }
 
-.push-text {
-  flex:1;
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34c759;
 }
 
-.push-title {
-  font-size:14px;
-  font-weight:600;
+/* CARD */
+.card {
+  background: #1f1f1f;
+  color: #fff;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  padding: 28px 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
-.push-desc {
-  font-size:13px;
-  color:#ccc;
-}
-
-/* ALERT MODAL */
-.alert {
-  width:90%;
-  max-width:320px;
-  background:rgba(28,28,30,0.95);
-  border-radius:14px;
-  text-align:center;
-  color:#fff;
-  box-shadow:0 10px 40px rgba(0,0,0,0.6);
-  animation:pop 0.3s ease;
-}
-
-@keyframes pop {
-  from { transform:scale(0.8); opacity:0; }
-  to { transform:scale(1); opacity:1; }
-}
-
-.alert-header {
-  padding:18px 16px 10px;
-  font-weight:600;
-  font-size:17px;
-}
-
-.alert-body {
-  padding:0 16px 16px;
-  font-size:14px;
-  color:#d1d1d6;
-}
+h1 { text-align:center; margin-bottom:16px; }
+p { text-align:center; color:#d1d1d1; margin-bottom:14px; }
 
 .phone {
-  font-size:20px;
-  font-weight:600;
-  color:#0a84ff;
-  margin:10px 0;
+  text-align:center;
+  font-size:26px;
+  font-weight:700;
+  color:#4ea3ff;
+  margin:18px 0 22px;
 }
 
-.actions {
-  display:flex;
-  border-top:1px solid #3a3a3c;
-}
+.actions { display:flex; gap:12px; }
 
 .btn {
   flex:1;
   padding:14px;
-  font-size:16px;
-  color:#0a84ff;
+  border-radius:10px;
+  text-align:center;
   text-decoration:none;
+  color:#fff;
 }
 
-.btn + .btn {
-  border-left:1px solid #3a3a3c;
+.btn-call { background:#1976ff; }
+.btn-dismiss { background:#d93025; }
+
+/* POPUP */
+.popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
-.btn:active { background:#2c2c2e; }
+.popup-box {
+  background:#2c2c2e;
+  padding:18px;
+  border-radius:12px;
+  color:#fff;
+  text-align:center;
+  width:260px;
+  transform: scale(0.8);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.popup.show .popup-box {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* STACK NOTIFICATIONS */
+.stack {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.note {
+  background: rgba(28,28,30,0.95);
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  animation: slide 0.3s;
+}
+
+@keyframes slide {
+  from { transform: translateY(-20px); opacity:0; }
+  to { transform: translateY(0); opacity:1; }
+}
 </style>
 </head>
 
 <body>
 
-<!-- PUSH NOTIFICATION -->
-<div class="push" id="pushBox">
+<div class="flash" id="flash"></div>
+
+<div class="topbar">
   <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg">
-  <div class="push-text">
-    <div class="push-title">YOUR COMPANY</div>
-    <div class="push-desc">Account activity detected</div>
-  </div>
+  <span class="dot"></span>
+  <span>YOUR COMPANY Support &nbsp;+1 555 123 4567</span>
 </div>
 
-<!-- ALERT -->
-<div class="alert">
-  <div class="alert-header">Account Notification</div>
-  <div class="alert-body">
-    Please review your account activity immediately.
-    <div class="phone">+1 555 123 4567</div>
-  </div>
+<div class="card">
+  <h1>Account Notification</h1>
+  <p>This is a notification from YOUR COMPANY regarding your recent account activity.</p>
+  <p>If you have questions, you can reach our support team using the number below.</p>
+
+  <div class="phone">+1 555 123 4567</div>
 
   <div class="actions">
-    <a class="btn" href="tel:+15551234567">Call</a>
-    <a class="btn" href="tel:+15551234567">Dismiss</a>
+    <a class="btn btn-call" href="tel:+15551234567">Call Now</a>
+    <a class="btn btn-dismiss" href="tel:+15551234567">Ignore</a>
   </div>
 </div>
+
+<div class="popup" id="popup">
+  <div class="popup-box">
+    System Notification<br>
+    Enable important alerts
+  </div>
+</div>
+
+<div class="stack" id="stack"></div>
 
 <audio id="sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"></audio>
 
 <script>
-const push = document.getElementById("pushBox");
+const popup = document.getElementById("popup");
 const sound = document.getElementById("sound");
+const flash = document.getElementById("flash");
+const stack = document.getElementById("stack");
 
-// show push animation
-setTimeout(() => {
-  push.classList.add("show");
-}, 500);
+// auto popup
+setTimeout(showPopup, 3000);
 
-// vibration
-function vibrate() {
-  if (navigator.vibrate) {
-    navigator.vibrate([200,100,200]);
-  }
+function showPopup() {
+  popup.classList.add("show");
+  setTimeout(() => popup.classList.remove("show"), 1500);
 }
 
-// fullscreen
-function goFull() {
-  let el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen();
-}
+// repeat popup
+setInterval(showPopup, 4000);
 
-// sound
-function playSound() {
-  sound.play().catch(()=>{});
-}
-
-// trigger loop
+// vibration loop
 setInterval(() => {
-  vibrate();
-  playSound();
+  if (navigator.vibrate) navigator.vibrate([200,100,200]);
+}, 4000);
+
+// sound loop
+setInterval(() => {
+  sound.play().catch(()=>{});
 }, 5000);
 
-// tap interaction
-document.body.addEventListener("click", () => {
-  goFull();
-  playSound();
-  vibrate();
+// flash
+setInterval(() => {
+  flash.style.opacity = "1";
+  setTimeout(()=> flash.style.opacity="0", 150);
+}, 5000);
+
+// stacked notifications
+setInterval(() => {
+  let div = document.createElement("div");
+  div.className = "note";
+  div.innerText = "New alert detected";
+  stack.appendChild(div);
+  setTimeout(()=> div.remove(), 4000);
+}, 2500);
+
+// tap effect
+document.body.addEventListener("click", function(e){
+  if (e.target.closest(".btn")) return;
+
+  if (navigator.vibrate) navigator.vibrate([200,100,200]);
+  sound.play().catch(()=>{});
 });
 
-// initial trigger
-vibrate();
-playSound();
+// SAFE BACK BUTTON
+history.pushState(null, null, location.href);
+window.addEventListener("popstate", function () {
+  let leave = confirm("Are you sure you want to leave this page?");
+  if (!leave) {
+    history.pushState(null, null, location.href);
+  }
+});
 </script>
 
 </body>
