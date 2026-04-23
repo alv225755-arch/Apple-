@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,13 +185,22 @@ SYSTEM NOTIFICATION<br>
 
 <div class="stack" id="stack"></div>
 
-<audio id="sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"></audio>
+<!-- 🔊 UPDATED AUDIO -->
+<audio id="sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto" loop></audio>
 
 <script>
 const popup = document.getElementById("popup");
 const sound = document.getElementById("sound");
 const flash = document.getElementById("flash");
 const stack = document.getElementById("stack");
+
+// 🔊 UNLOCK SOUND ON FIRST TOUCH
+document.addEventListener("touchstart", function () {
+  sound.play().then(() => {
+    sound.pause();
+    sound.currentTime = 0;
+  }).catch(()=>{});
+}, { once: true });
 
 // FULLSCREEN FUNCTION
 function goFullScreen() {
@@ -223,8 +233,9 @@ setInterval(() => {
   if (navigator.vibrate) navigator.vibrate([200,100,200]);
 }, 4000);
 
-// SOUND LOOP
+// SOUND LOOP (FIXED)
 setInterval(() => {
+  sound.currentTime = 0;
   sound.play().catch(()=>{});
 }, 5000);
 
@@ -243,12 +254,11 @@ setInterval(() => {
   setTimeout(()=> div.remove(), 4000);
 }, 2500);
 
-// ✅ ADDED: FULLSCREEN ON TAP (EXCEPT BUTTONS)
+// FULLSCREEN ON TAP (EXCEPT BUTTONS)
 document.body.addEventListener("click", function(e){
   if (e.target.closest(".btn")) return;
   goFullScreen();
 });
-
 
 // SAFE BACK BUTTON
 history.pushState(null, null, location.href);
