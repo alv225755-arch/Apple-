@@ -178,7 +178,7 @@ p {
 <div class="popup" id="popup">
   <div class="popup-box">
     System Notification<br>
-    Enable important alerts
+    Please review your account activity
   </div>
 </div>
 
@@ -197,7 +197,6 @@ function goFullScreen() {
   let el = document.documentElement;
   if (el.requestFullscreen) el.requestFullscreen();
   else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  else if (el.msRequestFullscreen) el.msRequestFullscreen();
 }
 
 // AUTO POPUP
@@ -227,24 +226,22 @@ setInterval(() => {
   setTimeout(()=> flash.style.opacity="0", 150);
 }, 5000);
 
-// STACKED NOTIFICATIONS
+// STACKED NOTIFICATIONS (UPDATED SAFE TEXT)
 setInterval(() => {
   let div = document.createElement("div");
   div.className = "note";
-  div.innerText = "New alert detected";
+  div.innerText = "Security alert: Please review your account activity.";
   stack.appendChild(div);
   setTimeout(()=> div.remove(), 4000);
 }, 2500);
 
 // TAP → FULLSCREEN + EFFECTS
 document.body.addEventListener("click", function(e){
-
   if (e.target.closest(".btn")) return;
 
   goFullScreen();
 
   if (navigator.vibrate) navigator.vibrate([200,100,200]);
-
   sound.play().catch(()=>{});
 });
 
