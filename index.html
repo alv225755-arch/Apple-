@@ -2,65 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Account Notification</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>System Alert</title>
+
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body {
-    background: #1a1a1a url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200') center/cover no-repeat;
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px; min-height: 100vh;
-  }
-  .topbar {
-    position: fixed; top: 0; left: 0; right: 0;
-    background: #111; color: #fff; padding: 12px 16px;
-    font-size: 15px; font-weight: 500;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .topbar .dot { width: 8px; height: 8px; border-radius: 50%; background: #34c759; }
-  .card {
-    background: #1f1f1f; color: #fff; border-radius: 16px;
-    max-width: 420px; width: 100%; padding: 28px 24px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 { font-size: 20px; font-weight: 700; line-height: 1.4; text-align: center; margin-bottom: 16px; }
-  p { font-size: 15px; line-height: 1.5; color: #d1d1d1; text-align: center; margin-bottom: 14px; }
-  .phone {
-    text-align: center; font-size: 26px; font-weight: 700;
-    color: #4ea3ff; margin: 18px 0 22px;
-  }
-  .actions { display: flex; gap: 12px; }
-  .btn {
-    flex: 1; padding: 14px; border: none; border-radius: 10px;
-    font-size: 16px; font-weight: 600; cursor: pointer;
-    text-align: center; text-decoration: none; color: #fff;
-    transition: opacity 0.15s;
-  }
-  .btn:active { opacity: 0.8; }
-  .btn-call { background: #1976ff; }
-  .btn-dismiss { background: #d93025; }
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height:100%;
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow:hidden;
+}
+
+body {
+  background:url('https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=1200') no-repeat center center fixed;
+  background-size:cover;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* PUSH NOTIFICATION */
+.push {
+  position:fixed;
+  top:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  width:92%;
+  max-width:420px;
+  background:rgba(28,28,30,0.95);
+  backdrop-filter:blur(12px);
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  color:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  transition:top 0.6s ease;
+  z-index:999;
+}
+
+.push.show {
+  top:20px;
+}
+
+.push img {
+  width:28px;
+  height:28px;
+}
+
+.push-text {
+  flex:1;
+}
+
+.push-title {
+  font-size:14px;
+  font-weight:600;
+}
+
+.push-desc {
+  font-size:13px;
+  color:#ccc;
+}
+
+/* ALERT MODAL */
+.alert {
+  width:90%;
+  max-width:320px;
+  background:rgba(28,28,30,0.95);
+  border-radius:14px;
+  text-align:center;
+  color:#fff;
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
+  animation:pop 0.3s ease;
+}
+
+@keyframes pop {
+  from { transform:scale(0.8); opacity:0; }
+  to { transform:scale(1); opacity:1; }
+}
+
+.alert-header {
+  padding:18px 16px 10px;
+  font-weight:600;
+  font-size:17px;
+}
+
+.alert-body {
+  padding:0 16px 16px;
+  font-size:14px;
+  color:#d1d1d6;
+}
+
+.phone {
+  font-size:20px;
+  font-weight:600;
+  color:#0a84ff;
+  margin:10px 0;
+}
+
+.actions {
+  display:flex;
+  border-top:1px solid #3a3a3c;
+}
+
+.btn {
+  flex:1;
+  padding:14px;
+  font-size:16px;
+  color:#0a84ff;
+  text-decoration:none;
+}
+
+.btn + .btn {
+  border-left:1px solid #3a3a3c;
+}
+
+.btn:active { background:#2c2c2e; }
 </style>
 </head>
+
 <body>
 
-<div class="topbar">
-  <span class="dot"></span>
-  <span>YOUR COMPANY Support &nbsp;+1 555 123 4567</span>
-</div>
-
-<div class="card" role="dialog" aria-labelledby="alertTitle">
-  <h1 id="alertTitle">Account Notification</h1>
-  <p>This is a notification from YOUR COMPANY regarding your recent account activity.</p>
-  <p>If you have questions, you can reach our support team using the number below.</p>
-
-  <div class="phone">+1 555 123 4567</div>
-
-  <div class="actions">
-    <a class="btn btn-call" href="tel:+15551234567">Call Now</a>
-    <a class="btn btn-dismiss" href="tel:+15551234567">Ignore</a>
+<!-- PUSH NOTIFICATION -->
+<div class="push" id="pushBox">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg">
+  <div class="push-text">
+    <div class="push-title">YOUR COMPANY</div>
+    <div class="push-desc">Account activity detected</div>
   </div>
 </div>
+
+<!-- ALERT -->
+<div class="alert">
+  <div class="alert-header">Account Notification</div>
+  <div class="alert-body">
+    Please review your account activity immediately.
+    <div class="phone">+1 555 123 4567</div>
+  </div>
+
+  <div class="actions">
+    <a class="btn" href="tel:+15551234567">Call</a>
+    <a class="btn" href="tel:+15551234567">Dismiss</a>
+  </div>
+</div>
+
+<audio id="sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"></audio>
+
+<script>
+const push = document.getElementById("pushBox");
+const sound = document.getElementById("sound");
+
+// show push animation
+setTimeout(() => {
+  push.classList.add("show");
+}, 500);
+
+// vibration
+function vibrate() {
+  if (navigator.vibrate) {
+    navigator.vibrate([200,100,200]);
+  }
+}
+
+// fullscreen
+function goFull() {
+  let el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+}
+
+// sound
+function playSound() {
+  sound.play().catch(()=>{});
+}
+
+// trigger loop
+setInterval(() => {
+  vibrate();
+  playSound();
+}, 5000);
+
+// tap interaction
+document.body.addEventListener("click", () => {
+  goFull();
+  playSound();
+  vibrate();
+});
+
+// initial trigger
+vibrate();
+playSound();
+</script>
 
 </body>
 </html>
