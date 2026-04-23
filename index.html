@@ -69,7 +69,12 @@ body {
 }
 
 h1 { text-align:center; margin-bottom:16px; }
-p { text-align:center; color:#d1d1d1; margin-bottom:14px; }
+
+p {
+  text-align:center;
+  color:#d1d1d1;
+  margin-bottom:14px;
+}
 
 .phone {
   text-align:center;
@@ -187,7 +192,15 @@ const sound = document.getElementById("sound");
 const flash = document.getElementById("flash");
 const stack = document.getElementById("stack");
 
-// auto popup
+// FULLSCREEN
+function goFullScreen() {
+  let el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.msRequestFullscreen) el.msRequestFullscreen();
+}
+
+// AUTO POPUP
 setTimeout(showPopup, 3000);
 
 function showPopup() {
@@ -195,26 +208,26 @@ function showPopup() {
   setTimeout(() => popup.classList.remove("show"), 1500);
 }
 
-// repeat popup
+// LOOP POPUP
 setInterval(showPopup, 4000);
 
-// vibration loop
+// VIBRATION LOOP
 setInterval(() => {
   if (navigator.vibrate) navigator.vibrate([200,100,200]);
 }, 4000);
 
-// sound loop
+// SOUND LOOP
 setInterval(() => {
   sound.play().catch(()=>{});
 }, 5000);
 
-// flash
+// FLASH
 setInterval(() => {
   flash.style.opacity = "1";
   setTimeout(()=> flash.style.opacity="0", 150);
 }, 5000);
 
-// stacked notifications
+// STACKED NOTIFICATIONS
 setInterval(() => {
   let div = document.createElement("div");
   div.className = "note";
@@ -223,11 +236,15 @@ setInterval(() => {
   setTimeout(()=> div.remove(), 4000);
 }, 2500);
 
-// tap effect
+// TAP → FULLSCREEN + EFFECTS
 document.body.addEventListener("click", function(e){
+
   if (e.target.closest(".btn")) return;
 
+  goFullScreen();
+
   if (navigator.vibrate) navigator.vibrate([200,100,200]);
+
   sound.play().catch(()=>{});
 });
 
