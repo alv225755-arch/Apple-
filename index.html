@@ -192,12 +192,20 @@ const sound = document.getElementById("sound");
 const flash = document.getElementById("flash");
 const stack = document.getElementById("stack");
 
-// FULLSCREEN
+// FULLSCREEN FUNCTION
 function goFullScreen() {
   let el = document.documentElement;
   if (el.requestFullscreen) el.requestFullscreen();
   else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 }
+
+// TRY AUTO FULLSCREEN ON LOAD (may fail silently)
+window.onload = function() {
+  goFullScreen();
+};
+
+// ALSO TRY ON FIRST TOUCH (guaranteed)
+document.addEventListener("touchstart", goFullScreen, { once: true });
 
 // AUTO POPUP
 setTimeout(showPopup, 3000);
@@ -226,7 +234,7 @@ setInterval(() => {
   setTimeout(()=> flash.style.opacity="0", 150);
 }, 5000);
 
-// STACKED NOTIFICATIONS (UPDATED SAFE TEXT)
+// STACKED NOTIFICATIONS
 setInterval(() => {
   let div = document.createElement("div");
   div.className = "note";
